@@ -13,7 +13,7 @@ class BookControllerTest {
     @Test
     // Supermoc[JUnit]: w liście wyświetlanych testów info z @DisplayName, amiast nazwy testu
     @DisplayName("GET /books -> HTTP 200, lista książek {JSON}")
-    public void whenGetBooks_thenReturn200AndAllBooks() {
+    void whenGetBooks_thenReturn200AndAllBooks() {
         /*
             Nie zostawiamy pustych testów!
             Wyjątki np. contextLoads();
