@@ -48,4 +48,17 @@ class BookControllerTest {
                 // Oczekuj HTTP 200
                 .andExpect(status().isOk());
     }
+
+    @Test
+    @DisplayName("GET /books -> HTTP 404")
+    void whenGetBook_thenReturnHTTP404() throws Exception {
+
+        var endpointURL = "/book";
+        mockMvc
+                .perform(
+                        get(endpointURL)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
 }
