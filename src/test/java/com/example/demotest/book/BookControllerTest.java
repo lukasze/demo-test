@@ -74,7 +74,7 @@ class BookControllerTest {
 
     @Test
     @DisplayName("GET /books -> all Books (4)")
-    void whenGetBook_thenReturnAllBooks() throws Exception {
+    void whenGetBooks_thenReturnAllBooks() throws Exception {
 
         var endpointURL = "/books";
         MvcResult mvcResult = mockMvc
@@ -97,4 +97,6 @@ class BookControllerTest {
                 () -> assertEquals("MICHAEL POLLAN", books.get(3).getAuthor())
         );
     }
+
+
 }
