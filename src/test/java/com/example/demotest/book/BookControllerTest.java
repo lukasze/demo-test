@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -36,7 +38,11 @@ class BookControllerTest {
 
     @Autowired
     // Jeśli utworzymy new ObjectMapper() nie uda się zmapować np. LocalDate
+    // Mapowanie Java <-> JSON
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     // Supermoc[JUnit]: test
     @Test
@@ -100,17 +106,32 @@ class BookControllerTest {
     }
 
     @Test
-    @DisplayName("POST/books -> 200")
-    void whenPOSTBooks_thenReturn200() throws Exception {
-
+    @DisplayName("POST /books -> 200")
+    // Supermoc - czyszczenie kontekstu Spring'a (np. baza H2)
+    @DirtiesContext
+    void whenPOSTBooks_thenReturn200AndAddBookToRepo() throws Exception {
+        // given
         var endpointURL = "/books";
-        MvcResult mvcResult = mockMvc
+        var author = "Simon Singh";
+        var title = "The Code Book";
+        var newBook = Book.builder().author(author).title(title).build();
+        var newBookAsJSON = objectMapper.writeValueAsString(newBook);
+        var initialListSize = bookRepository.getAll().size();
+        // when
+       mockMvc
                 .perform(
                         post(endpointURL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newBookAsJSON)
                 )
                 .andDo(print())
-                .andExpect(status().is(200))
-                .andReturn();
+                .andExpect(status().is(200));
+        // then
+        assertAll("should add one book",
+                () -> assertEquals(initialListSize + 1, bookRepository.getAll().size()),
+                () -> assertEquals(author, bookRepository.getAll().get(4).getAuthor()),
+                () -> assertEquals(title, bookRepository.getAll().get(4).getTitle())
+        );
     }
 
 
