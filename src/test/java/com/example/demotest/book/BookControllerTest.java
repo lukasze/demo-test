@@ -17,6 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -96,6 +97,20 @@ class BookControllerTest {
                 () -> assertEquals("Andrzej Leder", books.get(2).getAuthor()),
                 () -> assertEquals("MICHAEL POLLAN", books.get(3).getAuthor())
         );
+    }
+
+    @Test
+    @DisplayName("POST/books -> 200")
+    void whenPOSTBooks_thenReturn200() throws Exception {
+
+        var endpointURL = "/books";
+        MvcResult mvcResult = mockMvc
+                .perform(
+                        post(endpointURL)
+                )
+                .andDo(print())
+                .andExpect(status().is(200))
+                .andReturn();
     }
 
 
